@@ -1,0 +1,7 @@
+{
+  "extends": ["next", "prettier", "eslint:recommended"],
+  "rules": {
+    "@next/next/no-sync-scripts": ["error"],
+    "@next/next/no-img-element": ["error"]
+  }
+}
