@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Toaster } from '@/components/ui/toaster'
 import StoreProvider from '../store/provider'
 import { headers } from 'next/headers'
+import PrivateRoute from '@/context/PrivateRouteContext'
 
 export const metadata = {
   title: 'Tour Dasboard',
@@ -48,7 +49,9 @@ export default function RootLayout({
           )}
 
           <div className="container mt-3">
-            <StoreProvider>{children}</StoreProvider>
+            <StoreProvider>
+              <PrivateRoute>{children}</PrivateRoute>
+            </StoreProvider>
           </div>
         </div>
       </body>

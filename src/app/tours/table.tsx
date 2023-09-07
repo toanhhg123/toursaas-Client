@@ -1,3 +1,4 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -32,6 +33,76 @@ interface Props {
 }
 
 const TourList = ({ columnsAction, data }: Props) => {
+  const columnHelper = createColumnHelper<ITour>()
+
+  let columns: ColumnDef<ITour, unknown>[] = [
+    columnHelper.group({
+      id: 'group 1',
+      header: () => <span>Thông tin chung</span>,
+      columns: [
+        columnHelper.accessor('name', {
+          cell: (info) => info.getValue(),
+          header: 'Tên tour',
+        }),
+        columnHelper.accessor((row) => row.goDate, {
+          id: 'godat',
+          cell: (info) => format(info.getValue(), 'dd/MM/yyyy'),
+          header: () => <span>Ngày đi</span>,
+        }),
+        columnHelper.accessor('duration', {
+          cell: (info) => {
+            return info.getValue()
+          },
+          header: 'Thời gian',
+        }),
+      ],
+    }),
+
+    columnHelper.group({
+      id: 'group 2',
+      header: () => <span>Thông tin người hướng dẫn</span>,
+      columns: [
+        columnHelper.accessor('tourGuide', {
+          cell: (info) => {
+            return info.getValue().email
+          },
+          header: 'HD Viên',
+        }),
+        columnHelper.accessor((row) => row.tourMan, {
+          header: 'Quản lí Tour',
+          cell: (info) => info.getValue().email,
+        }),
+      ],
+    }),
+
+    columnHelper.group({
+      id: 'group 3',
+      header: () => <span>Phương tiện & Chỗ ở</span>,
+      columns: [
+        columnHelper.accessor('goFlight', {
+          cell: (info) => {
+            return info.getValue()
+          },
+          header: 'số hiệu(đi)',
+        }),
+        columnHelper.accessor('returnFlight', {
+          header: 'số hiệu(về)',
+          cell: (info) => info.getValue(),
+        }),
+
+        columnHelper.accessor('transport', {
+          header: 'Phương tiện',
+          cell: (info) => info.getValue(),
+        }),
+
+        columnHelper.accessor('hotelClass', {
+          header: 'Hạng khách sạn',
+          cell: (info) => info.getValue() + '*  ',
+        }),
+      ],
+    }),
+  ]
+
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -39,7 +110,7 @@ const TourList = ({ columnsAction, data }: Props) => {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
 
-  if (columnsAction) columns.push(columnsAction)
+  if (columnsAction) columns = [...columns, columnsAction]
 
   const table = useReactTable({
     data,
@@ -147,75 +218,5 @@ const TourList = ({ columnsAction, data }: Props) => {
     </>
   )
 }
-
-const columnHelper = createColumnHelper<ITour>()
-
-const columns: ColumnDef<ITour, unknown>[] = [
-  columnHelper.group({
-    id: 'group 1',
-    header: () => <span>Thông tin chung</span>,
-    columns: [
-      columnHelper.accessor('name', {
-        cell: (info) => info.getValue(),
-        header: 'Tên tour',
-      }),
-      columnHelper.accessor((row) => row.goDate, {
-        id: 'godat',
-        cell: (info) => format(info.getValue(), 'dd/MM/yyyy'),
-        header: () => <span>Ngày đi</span>,
-      }),
-      columnHelper.accessor('duration', {
-        cell: (info) => {
-          return info.getValue()
-        },
-        header: 'Thời gian',
-      }),
-    ],
-  }),
-
-  columnHelper.group({
-    id: 'group 2',
-    header: () => <span>Thông tin người hướng dẫn</span>,
-    columns: [
-      columnHelper.accessor('tourGuide', {
-        cell: (info) => {
-          return info.getValue().email
-        },
-        header: 'HD Viên',
-      }),
-      columnHelper.accessor((row) => row.tourMan, {
-        header: 'Quản lí Tour',
-        cell: (info) => info.getValue().email,
-      }),
-    ],
-  }),
-
-  columnHelper.group({
-    id: 'group 3',
-    header: () => <span>Phương tiện & Chỗ ở</span>,
-    columns: [
-      columnHelper.accessor('goFlight', {
-        cell: (info) => {
-          return info.getValue()
-        },
-        header: 'số hiệu(đi)',
-      }),
-      columnHelper.accessor('returnFlight', {
-        header: 'số hiệu(về)',
-        cell: (info) => info.getValue(),
-      }),
-
-      columnHelper.accessor('transport', {
-        header: 'Phương tiện',
-        cell: (info) => info.getValue(),
-      }),
-
-      columnHelper.accessor('hotelClass', {
-        header: 'Hạng khách sạn',
-        cell: (info) => info.getValue() + '*  ',
-      }),
-    ],
-  }),
-]
 
 export default TourList
